@@ -1,2 +1,37 @@
 # kerala-crime-dashboard
 കേരളത്തിലെ ജില്ല തല ക്രൈം &amp; ജസ്റ്റിസ് ഡാഷ്ബോർഡ്. IPC, SLL, പോക്സോ, സൈബർ ക്രൈം, NDPS, ജസ്റ്റിസ് സ്റ്റാറ്റിസ്റ്റിക്സ്. ഔദ്യോഗിക സ്രോതസ്സുകളിൽ നിന്നുള്ള ഡാറ്റ.
+
+
+<!-- Banner -->
+![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:1f77b4,100:764ba2&height=200&section=header&text=Kerala%20Crime%20Dashboard&fontSize=40&fontColor=ffffff)
+
+<!-- Animation -->
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&size=22&duration=3000&pause=1000&color=1F77B4&center=true&vCenter=true&width=600&lines=District-wise+Crime+%26+Justice+Statistics;IPC+%7C+SLL+%7C+POCSO+%7C+Cyber+%7C+NDPS;Data+from+official+Kerala+sources" alt="Typing Animation" />
+</p>
+
+<h3 align="center">A comprehensive dashboard for crime and justice statistics in Kerala.</h3>
+
+<p align="center">
+  <a href="https://your-username.github.io/kerala-crime-dashboard/"><strong>🌐 Live Demo</strong></a> •
+  <a href="#data-sources"><strong>📊 Data Sources</strong></a> •
+  <a href="#disclaimer"><strong>⚠️ Disclaimer</strong></a>
+</p>
+
+---
+
+### 📌 About
+- **District-wise** crime data for all 14 districts of Kerala.
+- Covers **IPC**, **SLL**, **POCSO**, **Cybercrime**, **NDPS**, and **Justice** metrics.
+- Built with **HTML, CSS, Bootstrap 5, Chart.js**.
+
+### 📊 Data Sources
+Kerala Police • KSCPCR • SCRB • NJDG • NCRB • Kerala Niyamasabha
+
+### ⚠️ Disclaimer
+This dashboard is for informational purposes only. Victim privacy is protected.  
+Data is from official sources; for latest figures, contact concerned departments.
+
+---
+
+<p align="center"><i>© 2026 Kerala Crime Dashboard Project</i></p>
