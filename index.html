@@ -1,33 +1,626 @@
-<!-- Banner -->
-![Banner](https://capsule-render.vercel.app/api?type=waving&color=0:1f77b4,100:764ba2&height=200&section=header&text=Kerala%20Crime%20Dashboard&fontSize=40&fontColor=ffffff)
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കേരള ക്രൈം & ജസ്റ്റിസ് ഡാഷ്ബോർഡ്</title>
+    <meta name="description" content="കേരളത്തിലെ എല്ലാ ജില്ലകളിലെയും കുറ്റകൃത്യങ്ങളുടെയും നീതിന്യായ വ്യവസ്ഥയുടെയും സമഗ്ര വിവരങ്ങൾ. IPC, SLL, പോക്സോ, സൈബർ ക്രൈം, NDPS, ജസ്റ്റിസ് സ്റ്റാറ്റിസ്റ്റിക്സ്.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { font-family: 'Poppins', 'Noto Sans Malayalam', sans-serif; }
+        body { background: #f0f2f5; color: #2c3e50; }
+        .navbar { background: linear-gradient(135deg, #1f77b4, #764ba2); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar-brand { font-weight: 700; color: #fff !important; font-size: 1.25rem; }
+        .nav-link { color: rgba(255,255,255,0.9) !important; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { color: #fff !important; background: rgba(255,255,255,0.15); border-radius: 5px; }
+        .hero { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 2.5rem 0; margin-bottom: 2rem; }
+        .hero h1 { font-weight: 700; font-size: 2.1rem; }
+        .card-custom { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 1.5rem; border: none; height: 100%; }
+        .section-title { font-weight: 700; color: #1f77b4; border-bottom: 3px solid #1f77b4; display: inline-block; padding-bottom: 6px; margin-bottom: 1.5rem; }
+        .kpi-card { background: #fff; border-radius: 14px; padding: 1.2rem 1.5rem; box-shadow: 0 3px 14px rgba(0,0,0,0.07); border-left: 5px solid #1f77b4; height: 100%; }
+        .kpi-card.ipc { border-left-color: #3498db; }
+        .kpi-card.sll { border-left-color: #e74c3c; }
+        .kpi-card.total { border-left-color: #27ae60; }
+        .kpi-card.pocso { border-left-color: #9b59b6; }
+        .kpi-card.cyber { border-left-color: #16a085; }
+        .kpi-card.ndps { border-left-color: #e67e22; }
+        .kpi-card.justice { border-left-color: #f39c12; }
+        .kpi-val { font-size: 1.8rem; font-weight: 700; }
+        .kpi-lbl { font-size: 0.85rem; color: #6c757d; font-weight: 500; }
+        .chart-container { position: relative; height: 300px; }
+        .chart-container-lg { position: relative; height: 420px; }
+        .table-custom thead { background: linear-gradient(135deg, #1f77b4, #764ba2); color: #fff; }
+        .table-custom th, .table-custom td { padding: 0.7rem 1rem; vertical-align: middle; }
+        .table-custom tbody tr:hover { background: #f8f9fa; }
+        .icon-cell { font-size: 1.4rem; width: 50px; text-align: center; }
+        .crime-icon { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; font-size: 1.3rem; color: #fff; }
+        .crime-icon.murder { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+        .crime-icon.theft { background: linear-gradient(135deg, #2980b9, #3498db); }
+        .crime-icon.burglary { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+        .crime-icon.robbery { background: linear-gradient(135deg, #d35400, #e67e22); }
+        .crime-icon.dacoity { background: linear-gradient(135deg, #7f8c8d, #95a5a6); }
+        .crime-icon.rape { background: linear-gradient(135deg, #ad1457, #e91e63); }
+        .crime-icon.kidnap { background: linear-gradient(135deg, #2c3e50, #34495e); }
+        .crime-icon.hurt { background: linear-gradient(135deg, #16a085, #1abc9c); }
+        .crime-icon.riot { background: linear-gradient(135deg, #c0392b, #f39c12); }
+        .crime-icon.cheat { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .crime-icon.cruelty { background: linear-gradient(135deg, #8e44ad, #c39bd3); }
+        .crime-icon.dowry { background: linear-gradient(135deg, #b7950b, #f1c40f); }
+        .crime-icon.ndps { background: linear-gradient(135deg, #d35400, #f39c12); }
+        .crime-icon.abkari { background: linear-gradient(135deg, #922b21, #c0392b); }
+        .crime-icon.arms { background: linear-gradient(135deg, #212f3d, #566573); }
+        .crime-icon.gambling { background: linear-gradient(135deg, #6c3483, #a569bd); }
+        .crime-icon.explosive { background: linear-gradient(135deg, #b03a2e, #e74c3c); }
+        .crime-icon.cyber { background: linear-gradient(135deg, #1a5276, #16a085); }
+        .crime-icon.pocso { background: linear-gradient(135deg, #7d3c98, #9b59b6); }
+        .crime-icon.other { background: linear-gradient(135deg, #566573, #7f8c8d); }
+        .note-box { background: #fff3cd; border-left: 5px solid #ffc107; border-radius: 10px; padding: 1rem 1.2rem; }
+        .alert-danger-custom { background: #f8d7da; border-left: 5px solid #e74c3c; border-radius: 10px; padding: 1rem 1.2rem; }
+        footer { background: #2c3e50; color: #fff; padding: 1.5rem 0; margin-top: 3rem; font-size: 0.9rem; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.5rem; }
+            .kpi-val { font-size: 1.3rem; }
+            .chart-container { height: 250px; }
+            .crime-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
 
-<!-- Animation -->
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&size=22&duration=3000&pause=1000&color=1F77B4&center=true&vCenter=true&width=600&lines=District-wise+Crime+%26+Justice+Statistics;IPC+%7C+SLL+%7C+POCSO+%7C+Cyber+%7C+NDPS;Data+from+official+Kerala+sources" alt="Typing Animation" />
-</p>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <span class="navbar-brand"><i class="bi bi-shield-fill-check"></i> കേരള ക്രൈം ഡാഷ്ബോർഡ്</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#overview">അവലോകനം</a></li>
+                <li class="nav-item"><a class="nav-link" href="#ipc">IPC</a></li>
+                <li class="nav-item"><a class="nav-link" href="#sll">SLL</a></li>
+                <li class="nav-item"><a class="nav-link" href="#children">കുട്ടികൾ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#pocso">പോക്സോ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#cyber">സൈബർ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#districts">ജില്ലകൾ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#justice">ജസ്റ്റിസ്</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-<h3 align="center">A comprehensive dashboard for crime and justice statistics in Kerala.</h3>
+<!-- HERO -->
+<section class="hero text-center">
+    <div class="container">
+        <h1><i class="bi bi-bar-chart-line"></i> കേരള സമഗ്ര ക്രൈം & ജസ്റ്റിസ് ഡാഷ്ബോർഡ്</h1>
+        <p class="mt-2">IPC & SLL കുറ്റകൃത്യങ്ങൾ | കുട്ടികൾക്കെതിരായ കുറ്റകൃത്യങ്ങൾ | പോക്സോ | സൈബർ | ജസ്റ്റിസ്</p>
+        <p class="small"><i class="bi bi-database"></i> സ്രോതസ്സുകൾ: കേരള പോലീസ് | KSCPCR | SCRB | NJDG | NCRB</p>
+    </div>
+</section>
 
-<p align="center">
-  <a href="https://your-username.github.io/kerala-crime-dashboard/"><strong>🌐 Live Demo</strong></a> •
-  <a href="#data-sources"><strong>📊 Data Sources</strong></a> •
-  <a href="#disclaimer"><strong>⚠️ Disclaimer</strong></a>
-</p>
+<div class="container">
 
----
+    <!-- OVERVIEW -->
+    <section id="overview">
+        <h2 class="section-title"><i class="bi bi-speedometer2"></i> അവലോകനം</h2>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="kpi-card ipc">
+                    <div class="kpi-val text-primary" id="kpi-ipc">—</div>
+                    <div class="kpi-lbl">ആകെ IPC കുറ്റകൃത്യങ്ങൾ (2020–2024)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card sll">
+                    <div class="kpi-val text-danger" id="kpi-sll">—</div>
+                    <div class="kpi-lbl">ആകെ SLL കുറ്റകൃത്യങ്ങൾ (2020–2024)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card total">
+                    <div class="kpi-val text-success" id="kpi-total">—</div>
+                    <div class="kpi-lbl">ആകെ കുറ്റകൃത്യങ്ങൾ (2020–2024)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card pocso">
+                    <div class="kpi-val" style="color:#9b59b6;">4,765</div>
+                    <div class="kpi-lbl">പോക്സോ കേസുകൾ (2025)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="kpi-card cyber">
+                    <div class="kpi-val" style="color:#16a085;">42,504</div>
+                    <div class="kpi-lbl">സൈബർ ക്രൈം പരാതികൾ (2025)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card ndps">
+                    <div class="kpi-val" style="color:#e67e22;">27,530</div>
+                    <div class="kpi-lbl">NDPS കേസുകൾ (2024)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card justice">
+                    <div class="kpi-val text-warning">6,500+</div>
+                    <div class="kpi-lbl">പെൻഡിംഗ് പോക്സോ കേസുകൾ</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="kpi-card justice">
+                    <div class="kpi-val text-warning">50,000</div>
+                    <div class="kpi-lbl">പെൻഡിംഗ് NDPS കേസുകൾ</div>
+                </div>
+            </div>
+        </div>
 
-### 📌 About
-- **District-wise** crime data for all 14 districts of Kerala.
-- Covers **IPC**, **SLL**, **POCSO**, **Cybercrime**, **NDPS**, and **Justice** metrics.
-- Built with **HTML, CSS, Bootstrap 5, Chart.js**.
+        <div class="card-custom mb-4">
+            <h4 class="section-title"><i class="bi bi-graph-up"></i> IPC vs SLL പ്രവണത (2020–2024)</h4>
+            <div class="chart-container-lg">
+                <canvas id="trendLineChart"></canvas>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>ആകെ കുറ്റകൃത്യങ്ങൾ:</strong> 2020: 5,54,724 | 2021: 5,24,960 | 2022: 4,54,836 | 2023: 5,84,373 | 2024: 5,04,157
+                <br><strong>2025 (മാർച്ച് 16 വരെ):</strong> 71,648 കേസുകൾ
+                <br><strong>സ്രോതസ്സ്:</strong> കേരള നിയമസഭ
+            </div>
+        </div>
+    </section>
 
-### 📊 Data Sources
-Kerala Police • KSCPCR • SCRB • NJDG • NCRB • Kerala Niyamasabha
+    <!-- IPC -->
+    <section id="ipc" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-journal-text"></i> IPC കുറ്റകൃത്യങ്ങൾ (2024)</h2>
+        <div class="card-custom">
+            <div class="table-responsive">
+                <table class="table table-custom table-bordered align-middle">
+                    <thead>
+                        <tr><th style="width:70px;">ചിഹ്നം</th><th>കുറ്റകൃത്യ തരം</th><th class="text-end">2024 കേസുകൾ</th></tr>
+                    </thead>
+                    <tbody id="ipcTable"></tbody>
+                </table>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>സ്രോതസ്സ്:</strong> കേരള പോലീസ് ക്രൈം സ്റ്റാറ്റിസ്റ്റിക്സ്
+            </div>
+        </div>
+    </section>
 
-### ⚠️ Disclaimer
-This dashboard is for informational purposes only. Victim privacy is protected.  
-Data is from official sources; for latest figures, contact concerned departments.
+    <!-- SLL -->
+    <section id="sll" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-book"></i> SLL കുറ്റകൃത്യങ്ങൾ (2024)</h2>
+        <div class="card-custom">
+            <div class="table-responsive">
+                <table class="table table-custom table-bordered align-middle">
+                    <thead>
+                        <tr><th style="width:70px;">ചിഹ്നം</th><th>കുറ്റകൃത്യ തരം</th><th class="text-end">2024 കേസുകൾ</th></tr>
+                    </thead>
+                    <tbody id="sllTable"></tbody>
+                </table>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>സ്രോതസ്സ്:</strong> കേരള പോലീസ്
+            </div>
+        </div>
+    </section>
 
----
+    <!-- CHILDREN -->
+    <section id="children" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-people-fill"></i> കുട്ടികൾക്കെതിരായ കുറ്റകൃത്യങ്ങൾ</h2>
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart text-danger"></i> കുട്ടികൾക്കെതിരായ കുറ്റകൃത്യങ്ങൾ (2020–2026)</h5>
+                    <div class="chart-container">
+                        <canvas id="childCrimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-list-check text-danger"></i> കുറ്റകൃത്യ തരങ്ങൾ (2024)</h5>
+                    <div class="chart-container">
+                        <canvas id="childCrimeTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-custom mt-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-table text-danger"></i> വിശദമായ ഡാറ്റ</h5>
+            <div class="table-responsive">
+                <table class="table table-custom table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th>കുറ്റകൃത്യ തരം</th>
+                            <th class="text-end">2020</th><th class="text-end">2021</th>
+                            <th class="text-end">2022</th><th class="text-end">2023</th>
+                            <th class="text-end">2024</th><th class="text-end">2025</th>
+                            <th class="text-end">2026*</th>
+                        </tr>
+                    </thead>
+                    <tbody id="childCrimeTable"></tbody>
+                </table>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>കുറിപ്പ്:</strong> 2026 ഫെബ്രുവരി വരെ. സ്രോതസ്സ്: കേരള പോലീസ്
+            </div>
+        </div>
+    </section>
 
-<p align="center"><i>© 2026 Kerala Crime Dashboard Project</i></p>
+    <!-- POCSO -->
+    <section id="pocso" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-shield-exclamation"></i> പോക്സോ കേസുകൾ</h2>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-graph-up-arrow" style="color:#9b59b6;"></i> പോക്സോ പ്രവണത (2013–2025)</h5>
+                    <div class="chart-container">
+                        <canvas id="pocsoTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-steps" style="color:#9b59b6;"></i> ജില്ല തല പോക്സോ (2025)</h5>
+                    <div class="chart-container">
+                        <canvas id="pocsoDistrictChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-custom mt-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-table" style="color:#9b59b6;"></i> ജില്ല തല പോക്സോ ഡാറ്റ</h5>
+            <div class="table-responsive">
+                <table class="table table-custom table-bordered align-middle">
+                    <thead>
+                        <tr><th>ജില്ല</th><th class="text-end">2024</th><th class="text-end">2025</th></tr>
+                    </thead>
+                    <tbody id="pocsoDistrictTable"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="alert-danger-custom mt-4">
+            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+            <strong>ശ്രദ്ധിക്കുക:</strong> 2013-ൽ 1,002 കേസുകൾ → 2025-ൽ 4,765 കേസുകൾ — <strong>4.7 മടങ്ങ് വർദ്ധനവ്</strong>.
+            <br><strong>സ്രോതസ്സ്:</strong> KSCPCR വാർഷിക റിപ്പോർട്ട്
+        </div>
+    </section>
+
+    <!-- CYBER -->
+    <section id="cyber" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-wifi"></i> സൈബർ ക്രൈം</h2>
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-graph-up-arrow text-info"></i> സൈബർ ക്രൈം പരാതികൾ</h5>
+                    <div class="chart-container">
+                        <canvas id="cyberChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart text-info"></i> സൈബർ ക്രൈം തരങ്ങൾ</h5>
+                    <div class="chart-container">
+                        <canvas id="cyberTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-custom mt-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="kpi-card cyber">
+                        <div class="kpi-val" style="color:#16a085;">₹814 കോടി</div>
+                        <div class="kpi-lbl">2025-ലെ ആകെ നഷ്ടം</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-card cyber">
+                        <div class="kpi-val" style="color:#16a085;">42,504</div>
+                        <div class="kpi-lbl">ആകെ പരാതികൾ (2025)</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-card cyber">
+                        <div class="kpi-val" style="color:#16a085;">₹2 കോടി</div>
+                        <div class="kpi-lbl">ദിവസേന ശരാശരി നഷ്ടം</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DISTRICTS -->
+    <section id="districts" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-geo-alt-fill"></i> ജില്ല തല വിവരങ്ങൾ (2024)</h2>
+        <div class="card-custom">
+            <div class="chart-container-lg">
+                <canvas id="districtChart"></canvas>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>സ്രോതസ്സ്:</strong> TNIE വിശകലനം (2024)
+            </div>
+        </div>
+    </section>
+
+    <!-- JUSTICE -->
+    <section id="justice" class="mt-5">
+        <h2 class="section-title"><i class="bi bi-bank2"></i> ജസ്റ്റിസ് സ്റ്റാറ്റിസ്റ്റിക്സ്</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="kpi-card justice">
+                    <div class="kpi-val text-warning">6,500+</div>
+                    <div class="kpi-lbl">പോക്സോ കേസുകൾ പെൻഡിംഗ്</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card justice">
+                    <div class="kpi-val text-warning">50,000</div>
+                    <div class="kpi-lbl">NDPS കേസുകൾ പെൻഡിംഗ്</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card justice">
+                    <div class="kpi-val text-warning">2 വർഷം 66 ദിവസം</div>
+                    <div class="kpi-lbl">പോക്സോ കേസ് തീർപ്പാക്കാൻ ശരാശരി സമയം</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-custom mt-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-warning"></i> ജില്ല തല പെൻഡിംഗ് പോക്സോ കേസുകൾ</h5>
+            <div class="chart-container">
+                <canvas id="pendingChart"></canvas>
+            </div>
+            <div class="note-box mt-3">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <strong>കുറിപ്പ്:</strong> തിരുവനന്തപുരം ജില്ലയിൽ 1,300+ കേസുകൾ പെൻഡിംഗ് — ഏറ്റവും കൂടുതൽ.
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer class="text-center">
+    <div class="container">
+        <p class="mb-1"><strong>ഡാറ്റ സ്രോതസ്സുകൾ:</strong> കേരള പോലീസ് | KSCPCR | SCRB | NJDG | NCRB | കേരള നിയമസഭ</p>
+        <p class="small mb-0">⚠️ ഈ ഡാഷ്ബോർഡ് വിവര ആവശ്യങ്ങൾക്ക് മാത്രമുള്ളതാണ്. ഇരകളുടെ സ്വകാര്യത പരിരക്ഷിക്കപ്പെടുന്നു.</p>
+        <p class="small mb-0 mt-1">© 2026 കേരള ക്രൈം ഡാഷ്ബോർഡ് പ്രോജക്ട്</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const C = { ipc:'#3498db', sll:'#e74c3c', total:'#27ae60', pocso:'#9b59b6', warning:'#f39c12', cyber:'#16a085' };
+
+    const crimeData = {
+        years: ['2020','2021','2022','2023','2024'],
+        ipc:   [149099,142643,235858,258538,198234],
+        sll:   [405625,382317,218978,325835,305923],
+        total: [554724,524960,454836,584373,504157]
+    };
+
+    const ipcHeads = [
+        { name:'കൊലപാതകം (Murder)', icon:'bi-person-x-fill', cls:'murder', count:335 },
+        { name:'ബലാത്സംഗം (Rape)', icon:'bi-gender-female', cls:'rape', count:2952 },
+        { name:'മോഷണം (Theft)', icon:'bi-bag-dash-fill', cls:'theft', count:4736 },
+        { name:'കവർച്ച (Burglary)', icon:'bi-house-door-fill', cls:'burglary', count:2668 },
+        { name:'റോബറി (Robbery)', icon:'bi-mask', cls:'robbery', count:915 },
+        { name:'ഡക്കോയ്റ്റി (Dacoity)', icon:'bi-people-fill', cls:'dacoity', count:70 },
+        { name:'അടിപിടി (Hurt)', icon:'bi-bandaid-fill', cls:'hurt', count:null },
+        { name:'കലാപം (Riots)', icon:'bi-fire', cls:'riot', count:null },
+        { name:'വഞ്ചന (Cheating)', icon:'bi-credit-card-2-front-fill', cls:'cheat', count:null },
+        { name:'ഭർത്താവിന്റെ ക്രൂരത', icon:'bi-person-heart', cls:'cruelty', count:null },
+        { name:'മറ്റ് IPC കുറ്റകൃത്യങ്ങൾ', icon:'bi-three-dots', cls:'other', count:null }
+    ];
+
+    const sllHeads = [
+        { name:'NDPS Act (ലഹരി വസ്തുക്കൾ)', icon:'bi-capsule', cls:'ndps', count:27530 },
+        { name:'Abkari Act (മദ്യം)', icon:'bi-cup-straw', cls:'abkari', count:81754 },
+        { name:'Arms Act (ആയുധം)', icon:'bi-crosshair', cls:'arms', count:128 },
+        { name:'Gambling Act (ചൂതാട്ടം)', icon:'bi-dice-5-fill', cls:'gambling', count:1865 },
+        { name:'Explosive Substances Act', icon:'bi-bomb', cls:'explosive', count:630 },
+        { name:'Dowry Prohibition Act', icon:'bi-gem', cls:'dowry', count:17 },
+        { name:'SC/ST (POA) Act', icon:'bi-shield-fill', cls:'murder', count:132 },
+        { name:'Prohibition of Child Marriage', icon:'bi-people-fill', cls:'kidnap', count:10 },
+        { name:'Indian Passport Act', icon:'bi-passport-fill', cls:'other', count:89 },
+        { name:'Essential Commodities Act', icon:'bi-box-seam', cls:'other', count:47 },
+        { name:'മറ്റ് SLL കുറ്റകൃത്യങ്ങൾ', icon:'bi-three-dots', cls:'other', count:193684 }
+    ];
+
+    const childCrime = {
+        years: ['2020','2021','2022','2023','2024','2025','2026*'],
+        total: [3941,4536,5640,5903,5140,5537,811],
+        murder: [29,41,29,33,23,20,4],
+        pocso: [1243,1568,1704,1719,2161,2242,329],
+        kidnapping: [195,257,279,191,112,128,15],
+        other: [2445,2637,3597,3939,2827,3131,461]
+    };
+
+    const childCrimeTypes2024 = {
+        labels: ['പോക്സോ', 'കൊലപാതകം', 'തട്ടിക്കൊണ്ടുപോകൽ', 'മറ്റുള്ളവ'],
+        values: [2161, 23, 112, 2827]
+    };
+
+    const pocsoTrend = {
+        years: ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],
+        cases: [1002,1360,1445,1500,1650,1780,1820,1243,1568,1704,1719,4607,4765]
+    };
+
+    const pocsoDistrict = [
+        { name:'തിരുവനന്തപുരം', c2024:602, c2025:689 },
+        { name:'കൊല്ലം', c2024:469, c2025:502 },
+        { name:'മലപ്പുറം', c2024:440, c2025:465 },
+        { name:'കോഴിക്കോട്', c2024:430, c2025:460 },
+        { name:'എറണാകുളം', c2024:350, c2025:268 },
+        { name:'തൃശ്ശൂർ', c2024:320, c2025:212 },
+        { name:'പാലക്കാട്', c2024:280, c2025:245 },
+        { name:'ആലപ്പുഴ', c2024:250, c2025:189 },
+        { name:'കോട്ടയം', c2024:230, c2025:178 },
+        { name:'കണ്ണൂർ', c2024:200, c2025:178 },
+        { name:'പത്തനംതിട്ട', c2024:180, c2025:134 },
+        { name:'ഇടുക്കി', c2024:150, c2025:123 },
+        { name:'വയനാട്', c2024:130, c2025:112 },
+        { name:'കാസർഗോഡ്', c2024:155, c2025:155 }
+    ];
+
+    const cyberData = { years:['2022','2023','2024','2025'], complaints:[9619,23748,41426,42504] };
+    const cyberTypes = {
+        labels: ['ട്രേഡിംഗ് സ്കാം', 'ജോബ് സ്കാം', 'ഫിഷിംഗ്', 'ഇൻവെസ്റ്റ്മെന്റ്', 'ലോൺ ആപ്പ്', 'മറ്റുള്ളവ'],
+        values: [34.8, 33, 6.5, 6.5, 6.2, 13]
+    };
+
+    const districtData = [
+        { name:'തിരുവനന്തപുരം', cases:50627 },
+        { name:'എറണാകുളം', cases:45211 },
+        { name:'കൊല്ലം', cases:35211 },
+        { name:'മലപ്പുറം', cases:32651 },
+        { name:'കോട്ടയം', cases:28091 },
+        { name:'ആലപ്പുഴ', cases:27631 },
+        { name:'പാലക്കാട്', cases:22300 },
+        { name:'തൃശ്ശൂർ', cases:21000 },
+        { name:'കോഴിക്കോട്', cases:19500 },
+        { name:'കണ്ണൂർ', cases:17000 },
+        { name:'പത്തനംതിട്ട', cases:14000 },
+        { name:'ഇടുക്കി', cases:9000 },
+        { name:'വയനാട്', cases:8000 },
+        { name:'കാസർഗോഡ്', cases:7500 }
+    ];
+
+    const pendingPocso = [
+        { district:'തിരുവനന്തപുരം', cases:1370 },
+        { district:'എറണാകുളം', cases:704 },
+        { district:'കോഴിക്കോട്', cases:642 },
+        { district:'മലപ്പുറം', cases:578 },
+        { district:'പാലക്കാട്', cases:519 }
+    ];
+
+    // KPI
+    const ipcSum = crimeData.ipc.reduce((a,b)=>a+b,0);
+    const sllSum = crimeData.sll.reduce((a,b)=>a+b,0);
+    const totalSum = crimeData.total.reduce((a,b)=>a+b,0);
+    document.getElementById('kpi-ipc').textContent = ipcSum.toLocaleString('en-IN');
+    document.getElementById('kpi-sll').textContent = sllSum.toLocaleString('en-IN');
+    document.getElementById('kpi-total').textContent = totalSum.toLocaleString('en-IN');
+
+    // IPC Table
+    const ipcTbody = document.getElementById('ipcTable');
+    ipcHeads.forEach(h => {
+        ipcTbody.innerHTML += `<tr><td class="icon-cell"><span class="crime-icon ${h.cls}"><i class="bi ${h.icon}"></i></span></td><td>${h.name}</td><td class="text-end">${h.count ? h.count.toLocaleString('en-IN') : '—'}</td></tr>`;
+    });
+
+    // SLL Table
+    const sllTbody = document.getElementById('sllTable');
+    sllHeads.forEach(h => {
+        sllTbody.innerHTML += `<tr><td class="icon-cell"><span class="crime-icon ${h.cls}"><i class="bi ${h.icon}"></i></span></td><td>${h.name}</td><td class="text-end">${h.count ? h.count.toLocaleString('en-IN') : '—'}</td></tr>`;
+    });
+
+    // Charts
+    new Chart(document.getElementById('trendLineChart'), {
+        type:'line',
+        data:{ labels:crimeData.years, datasets:[
+            { label:'IPC', data:crimeData.ipc, borderColor:C.ipc, backgroundColor:'rgba(52,152,219,0.1)', tension:0.4, fill:true, pointRadius:6, borderWidth:3 },
+            { label:'SLL', data:crimeData.sll, borderColor:C.sll, backgroundColor:'rgba(231,76,60,0.1)', tension:0.4, fill:true, pointRadius:6, borderWidth:3 },
+            { label:'ആകെ', data:crimeData.total, borderColor:C.total, tension:0.4, fill:false, pointRadius:5, borderWidth:2, borderDash:[5,5] }
+        ]},
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    new Chart(document.getElementById('childCrimeChart'), {
+        type:'bar',
+        data:{ labels:childCrime.years, datasets:[{ label:'ആകെ', data:childCrime.total, backgroundColor:childCrime.total.map((v,i)=> i===childCrime.total.length-1?'rgba(155,89,182,0.4)':'rgba(231,76,60,0.75)'), borderRadius:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    new Chart(document.getElementById('childCrimeTypeChart'), {
+        type:'doughnut',
+        data:{ labels:childCrimeTypes2024.labels, datasets:[{ data:childCrimeTypes2024.values, backgroundColor:[C.pocso,'#c0392b',C.warning,'#95a5a6'], borderWidth:3, borderColor:'#fff' }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    new Chart(document.getElementById('pocsoTrendChart'), {
+        type:'line',
+        data:{ labels:pocsoTrend.years, datasets:[{ label:'പോക്സോ കേസുകൾ', data:pocsoTrend.cases, borderColor:C.pocso, backgroundColor:'rgba(155,89,182,0.15)', tension:0.4, fill:true, pointRadius:5, borderWidth:3 }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    const sortedPocso = [...pocsoDistrict].sort((a,b)=>b.c2025-a.c2025);
+    new Chart(document.getElementById('pocsoDistrictChart'), {
+        type:'bar',
+        data:{ labels:sortedPocso.map(d=>d.name), datasets:[{ label:'2025 കേസുകൾ', data:sortedPocso.map(d=>d.c2025), backgroundColor:sortedPocso.map(d=> d.c2025>500?C.sll: d.c2025>400?C.warning: d.c2025>300?C.pocso:C.ipc), borderRadius:5 }] },
+        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    new Chart(document.getElementById('cyberChart'), {
+        type:'bar',
+        data:{ labels:cyberData.years, datasets:[{ label:'പരാതികൾ', data:cyberData.complaints, backgroundColor:'rgba(22,160,133,0.75)', borderRadius:8 }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    new Chart(document.getElementById('cyberTypeChart'), {
+        type:'doughnut',
+        data:{ labels:cyberTypes.labels, datasets:[{ data:cyberTypes.values, backgroundColor:['#16a085','#1abc9c','#f39c12','#e67e22','#9b59b6','#95a5a6'], borderWidth:3, borderColor:'#fff' }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    const sortedDist = [...districtData].sort((a,b)=>b.cases-a.cases);
+    new Chart(document.getElementById('districtChart'), {
+        type:'bar',
+        data:{ labels:sortedDist.map(d=>d.name), datasets:[{ label:'FIR-കൾ', data:sortedDist.map(d=>d.cases), backgroundColor:sortedDist.map(d=> d.cases>40000?C.sll: d.cases>30000?C.warning: d.cases>20000?C.ipc:C.total), borderRadius:6 }] },
+        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    const sortedPending = [...pendingPocso].sort((a,b)=>b.cases-a.cases);
+    new Chart(document.getElementById('pendingChart'), {
+        type:'bar',
+        data:{ labels:sortedPending.map(d=>d.district), datasets:[{ label:'പെൻഡിംഗ് കേസുകൾ', data:sortedPending.map(d=>d.cases), backgroundColor:sortedPending.map(d=> d.cases>1000?C.sll: d.cases>600?C.warning:C.ipc), borderRadius:6 }] },
+        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback:v=>v.toLocaleString('en-IN') } } } }
+    });
+
+    // Child Crime Table
+    const childTableRows = [
+        { label:'കൊലപാതകം', key:'murder' },
+        { label:'പോക്സോ (Sec 4 & 6)', key:'pocso' },
+        { label:'തട്ടിക്കൊണ്ടുപോകൽ', key:'kidnapping' },
+        { label:'മറ്റ് കുറ്റകൃത്യങ്ങൾ', key:'other' },
+        { label:'<strong>ആകെ</strong>', key:'total', bold:true }
+    ];
+    const childTbody = document.getElementById('childCrimeTable');
+    childTableRows.forEach(row => {
+        let html = `<tr${row.bold?' style="background:#f8f9fa;"':''}><td>${row.label}</td>`;
+        childCrime.years.forEach((y,i) => {
+            const val = childCrime[row.key][i];
+            html += `<td class="text-end">${row.bold?'<strong>':''}${val?val.toLocaleString('en-IN'):'—'}${row.bold?'</strong>':''}</td>`;
+        });
+        html += '</tr>';
+        childTbody.innerHTML += html;
+    });
+
+    // POCSO Table
+    const pocsoTbody = document.getElementById('pocsoDistrictTable');
+    pocsoDistrict.forEach(d => {
+        pocsoTbody.innerHTML += `<tr><td>${d.name}</td><td class="text-end">${d.c2024}</td><td class="text-end">${d.c2025}</td></tr>`;
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e){
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+            document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
